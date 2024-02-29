@@ -86,6 +86,9 @@ public class SecurityConfig{
                 .antMatchers(HttpMethod.POST, "/api/gateway/dispositivo/sendNotification").hasAnyRole(Role.USER.name(),Role.ADMIN.name(), Role.SUPERADMIN.name())
                 .antMatchers(HttpMethod.POST, "/api/gateway/dispositivo/sendNotification/{negocioId}").hasAnyRole(Role.ADMIN.name(), Role.SUPERADMIN.name())
 
+                .antMatchers("/topic/**").permitAll()
+                .antMatchers("/app/chat/**").permitAll()
+                .antMatchers("/chat-socket/**").permitAll()
 
                 .antMatchers("/gateway/producto/**").hasAnyRole(Role.ADMIN.name(), Role.SUPERADMIN.name())
                 //.antMatchers(HttpMethod.PUT, "/api/user/{id}").permitAll()

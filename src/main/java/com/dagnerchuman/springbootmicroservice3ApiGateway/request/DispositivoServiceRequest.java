@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @FeignClient(value = "device-service",
-        path="api/dispositivo",
-        //url = "${device.service.url}",
+        //path="api/dispositivo",
+        url = "${device.service.url}",
         configuration = FeignConfiguration.class)
 public interface DispositivoServiceRequest {
 

@@ -1,4 +1,4 @@
-package com.dagnerchuman.springbootmicroservice5Negocio;
+package com.dagnerchuman.springbootmicroservice3ApiGateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
