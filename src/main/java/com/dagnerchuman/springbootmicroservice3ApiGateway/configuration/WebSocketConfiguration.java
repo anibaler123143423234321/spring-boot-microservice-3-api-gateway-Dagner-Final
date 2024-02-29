@@ -18,7 +18,7 @@
         @Override
         public void registerStompEndpoints(StompEndpointRegistry registry) {
             registry.addEndpoint("/chat-socket")
-                    .setAllowedOrigins("http://localhost:5200")
+                    .setAllowedOrigins("https://dotval-app.web.app/")
                     .withSockJS();
         }
     }
