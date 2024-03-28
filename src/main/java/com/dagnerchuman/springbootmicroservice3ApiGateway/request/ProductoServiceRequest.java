@@ -7,8 +7,8 @@ import java.util.List;
 
 @FeignClient(
         value="producto-service",
-        //path="/api/producto",
-        url="${producto.service.url}",
+        path="/api/producto",
+        //url="${producto.service.url}",
         configuration = FeignConfiguration.class
 )
 public interface ProductoServiceRequest {
@@ -22,7 +22,7 @@ public interface ProductoServiceRequest {
     @GetMapping()
     List<Object> getAllProductos();
 
-    @GetMapping("{productoId}")
+    @GetMapping("/{productoId}")
     Object getProductoById(@PathVariable("productoId") Long productoId);
 
     // Agregar el nuevo método para eliminar todos los productos
@@ -48,4 +48,11 @@ public interface ProductoServiceRequest {
 
     @GetMapping("/porcategoria/{categoriaId}")
     List<Object> getProductosPorCategoria(@PathVariable("categoriaId") Long categoriaId);
+
+    @GetMapping("/v1/qrcode/{productId}")
+    byte[] generateQRCode(
+            @PathVariable("productId") Long productId,
+            @RequestParam(defaultValue = "350") int width,
+            @RequestParam(defaultValue = "350") int height
+    );
 }

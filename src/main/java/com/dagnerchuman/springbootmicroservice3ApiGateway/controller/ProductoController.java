@@ -2,11 +2,15 @@ package com.dagnerchuman.springbootmicroservice3ApiGateway.controller;
 
 import com.dagnerchuman.springbootmicroservice3ApiGateway.request.ProductoServiceRequest;
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +18,8 @@ import java.util.Map;
 @RequestMapping("gateway/producto")
 @CrossOrigin(origins = "http://api-gateway:5200") // Esto permite solicitudes desde http://localhost:5200
 public class ProductoController {
+
+    private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
 
     @Autowired
     private ProductoServiceRequest productoServiceRequest;
@@ -39,7 +45,7 @@ public class ProductoController {
 
 
 
-    @GetMapping("{productoId}")
+    @GetMapping("/{productoId}")
     public ResponseEntity<?> getProductoById(@PathVariable Long productoId) {
         try {
             Object producto = productoServiceRequest.getProductoById(productoId);
@@ -99,6 +105,37 @@ public class ProductoController {
             return ResponseEntity.ok(productos);
         } catch (FeignException.NotFound e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping("/v1/qrcode/{productId}")
+    public ResponseEntity<?> generateQRCode(
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "350") int width,
+            @RequestParam(defaultValue = "350") int height,
+            HttpServletResponse response
+    ) {
+        try {
+            // Obtener el código QR como arreglo de bytes desde el servicio
+            byte[] qrCodeImage = productoServiceRequest.generateQRCode(productId, width, height);
+
+            // Configurar la respuesta HTTP
+            ServletOutputStream outputStream = response.getOutputStream();
+            response.setContentType("image/png");
+            response.setHeader("Content-Disposition", "inline; filename=qrcode.png");
+
+            // Escribir la imagen en el flujo de salida
+            outputStream.write(qrCodeImage);
+            outputStream.flush();
+            outputStream.close();
+
+            return ResponseEntity.ok().build();
+        } catch (FeignException e) {
+            log.error("Error al intentar generar el código QR", e);
+            return ResponseEntity.status(e.status()).body("Error al intentar generar el código QR");
+        } catch (Exception e) {
+            log.error("Error inesperado al intentar generar el código QR", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado al intentar generar el código QR");
         }
     }
 }

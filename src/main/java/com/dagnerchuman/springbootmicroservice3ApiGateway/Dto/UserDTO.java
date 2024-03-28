@@ -1,16 +1,12 @@
 package com.dagnerchuman.springbootmicroservice3ApiGateway.Dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ChatMessage {
-    String message;
-    String userId;
-    String nombre;
-    String apellido;
-
-
+public class UserDTO {
+    private Long id;
+    private String nombre;
+    private String apellido;
 }
